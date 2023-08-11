@@ -1,6 +1,7 @@
 package com.factory.kafka.producer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class KafkaDataForwarder {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
@@ -20,13 +22,12 @@ public class KafkaDataForwarder {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onFailure(final Throwable throwable) {
-                System.out.println("Failed to send message to Kafka, details: " + throwable.getMessage());
+                log.warn("Failed to send message to Kafka, details {}", throwable.getMessage());
             }
 
             @Override
             public void onSuccess(final SendResult<String, String> stringStringSendResult) {
-                System.out.println("The message has been successfully sent, message: " +
-                        stringStringSendResult.getProducerRecord().value());
+                log.debug("The message has been successfully sent, message {}", stringStringSendResult.getProducerRecord().value());
             }
         });
     }
