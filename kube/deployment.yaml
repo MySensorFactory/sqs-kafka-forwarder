@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqs-kafka-forwarder-deployment
+  labels:
+    app: sqs-kafka-forwarder
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sqs-kafka-forwarder
+  template:
+    metadata:
+      labels:
+        app: sqs-kafka-forwarder
+    spec:
+      containers:
+        - name: demo1
+          imagePullPolicy: Always
+          image: juliantheking/sqs-kafka-forwarder
+          ports:
+            - containerPort: 8080

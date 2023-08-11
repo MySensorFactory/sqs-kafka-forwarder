@@ -1,0 +1,20 @@
+sqs:
+  queueName: PressureSQSQueue
+  isLocal: true
+kafka:
+  temperatureTopicName: temperature
+  pressureTopicName: pressure
+cloud:
+  aws:
+    region:
+      static: eu-central-1
+    credentials:
+      access-key: abc
+      secret-key: abc
+    stack:
+      auto: false
+spring:
+  kafka:
+    bootstrap-servers: localhost:29092
+    producer:
+      bootstrap-servers: localhost:29092

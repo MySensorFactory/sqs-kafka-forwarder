@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqs-kafka-forwarder-service
+spec:
+  selector:
+    app: sqs-kafka-forwarder-deployment
+  ports:
+    - protocol: TCP
+      port: 30002
+      targetPort: 30002
