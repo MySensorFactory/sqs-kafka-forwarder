@@ -1,5 +1,6 @@
 package com.factory.kafka.producer;
 
+import com.factory.message.Pressure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +46,7 @@ class SqsKafkaForwarderTests {
         when(kafkaTemplate.send(eq(topicName), anyString(), eq(message)))
                 .thenReturn(listenableFuture);
 
-        kafkaDataForwarder.sendMessage(topicName, message);
+        kafkaDataForwarder.sendMessage(topicName, Pressure.newBuilder().build());
 
         verify(listenableFuture, times(1))
                 .addCallback(any(ListenableFutureCallback.class));
@@ -66,7 +67,7 @@ class SqsKafkaForwarderTests {
             return null;
         }).when(listenableFuture).addCallback(any(ListenableFutureCallback.class));
 
-        kafkaDataForwarder.sendMessage(topicName, message);
+        kafkaDataForwarder.sendMessage(topicName, Pressure.newBuilder().build());
 
         verify(listenableFuture, times(1))
                 .addCallback(any(ListenableFutureCallback.class));

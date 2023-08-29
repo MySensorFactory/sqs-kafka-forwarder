@@ -4,19 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@Service
 @Slf4j
-public class KafkaDataForwarder {
+public class KafkaDataForwarder <T> {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, T> kafkaTemplate;
 
-    public void sendMessage(final String topicName, final String message) {
+    public void sendMessage(final String topicName, final T message) {
         var future = kafkaTemplate.send(topicName, UUID.randomUUID().toString(), message);
 
         future.addCallback(new ListenableFutureCallback<>() {
@@ -26,8 +24,8 @@ public class KafkaDataForwarder {
             }
 
             @Override
-            public void onSuccess(final SendResult<String, String> stringStringSendResult) {
-                log.debug("The message has been successfully sent, message {}", stringStringSendResult.getProducerRecord().value());
+            public void onSuccess(final SendResult<String, T> sendResult) {
+                log.debug("The message has been successfully sent, message {}", sendResult.getProducerRecord().value());
             }
         });
     }

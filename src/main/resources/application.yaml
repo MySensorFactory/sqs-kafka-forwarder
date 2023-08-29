@@ -1,16 +1,23 @@
 sqs:
-  queueName: PressureSQSQueue
+  pressureQueue: PressureSQSQueue
+  temperatureQueue: TemperatureSQSQueue
+  noiseAndVibrationQueue: NoiseVibrationSQSQueue
+  gasCompositionQueue: GasCompositionSQSQueue
+  flowRateQueue: FlowRateSQSQueue
   isLocal: true
 kafka:
-  temperatureTopicName: temperature
-  pressureTopicName: pressure
+  temperatureTopic: temperature
+  pressureTopic: pressure
+  noiseAndVibrationTopic: noiseAndVibration
+  gasCompositionTopic: gasComposition
+  flowRateTopic: flowRate
 cloud:
   aws:
     region:
       static: eu-central-1
     credentials:
-      access-key: abc
-      secret-key: abc
+      access-key: AKIA3L7O27OZ5M6AXXX2
+      secret-key: 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
     stack:
       auto: false
 spring:

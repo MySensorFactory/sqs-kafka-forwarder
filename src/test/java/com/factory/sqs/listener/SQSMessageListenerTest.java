@@ -1,7 +1,9 @@
 package com.factory.sqs.listener;
 
+import com.amazonaws.services.sqs.model.Message;
 import com.factory.kafka.config.KafkaConfig;
 import com.factory.kafka.producer.KafkaDataForwarder;
+import com.factory.message.Pressure;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -29,12 +31,12 @@ class SQSMessageListenerTest {
         final String senderId = "Sender123";
         final String topicName = "test-topic";
 
-        when(kafkaConfig.getPressureTopicName()).thenReturn(topicName);
+        when(kafkaConfig.getPressureTopic()).thenReturn(topicName);
 
-        sqsMessageListener.receiveMessage(message, senderId);
+        sqsMessageListener.receivePressureMessage(new Message());
 
         verify(kafkaDataForwarder, times(1))
-                .sendMessage(topicName, message);
+                .sendMessage(topicName, Pressure.newBuilder().build());
     }
 }
 
