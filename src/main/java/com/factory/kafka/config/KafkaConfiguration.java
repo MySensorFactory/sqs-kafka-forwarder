@@ -6,8 +6,8 @@ import com.factory.message.GasComposition;
 import com.factory.message.NoiseAndVibration;
 import com.factory.message.Pressure;
 import com.factory.message.Temperature;
+import com.factory.message.serialization.AvroSerializer;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,12 +17,18 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
 @Configuration
 @RequiredArgsConstructor
 public class KafkaConfiguration {
+
+    private final KafkaNativeConfig kafkaNativeConfig;
 
     @Bean
     @ConfigurationProperties("kafka")
@@ -32,28 +38,27 @@ public class KafkaConfiguration {
 
     @Bean
     public ProducerFactory<String, Pressure> pressureProducerFactory() {
-        return getKafkaProducerFactory();
+        return getKafkaProducerFactory(kafkaNativeConfig);
     }
 
     @Bean
     public ProducerFactory<String, Temperature> temperatureProducerFactory() {
-        return getKafkaProducerFactory();
+        return getKafkaProducerFactory(kafkaNativeConfig);
     }
 
     @Bean
     public ProducerFactory<String, GasComposition> gasCompositionProducerFactory() {
-        return getKafkaProducerFactory();
+        return getKafkaProducerFactory(kafkaNativeConfig);
     }
 
     @Bean
     public ProducerFactory<String, NoiseAndVibration> noiseAndVibrationProducerFactory() {
-        return getKafkaProducerFactory();
+        return getKafkaProducerFactory(kafkaNativeConfig);
     }
-
 
     @Bean
     public ProducerFactory<String, FlowRate> flowRateProducerFactory() {
-        return getKafkaProducerFactory();
+        return getKafkaProducerFactory(kafkaNativeConfig);
     }
 
     @Bean
@@ -106,11 +111,12 @@ public class KafkaConfiguration {
         return new KafkaDataForwarder<>(flowRateKafkaTemplate());
     }
 
-    private <T> DefaultKafkaProducerFactory<String, T> getKafkaProducerFactory() {
+    private <T> DefaultKafkaProducerFactory<String, T> getKafkaProducerFactory(final KafkaNativeConfig kafkaNativeConfig) {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, List.of("localhost:29092"));
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, AvroSerializer.class);
+        configProps.put(BOOTSTRAP_SERVERS_CONFIG, kafkaNativeConfig.getBootstrapAddress());
+        configProps.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, AvroSerializer.class);
+        configProps.put(SCHEMA_REGISTRY_URL_CONFIG, kafkaNativeConfig.getSchemaRegistryUrl());
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 }

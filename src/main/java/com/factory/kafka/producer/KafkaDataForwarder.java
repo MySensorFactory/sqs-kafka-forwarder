@@ -25,7 +25,7 @@ public class KafkaDataForwarder <T> {
 
             @Override
             public void onSuccess(final SendResult<String, T> sendResult) {
-                log.debug("The message has been successfully sent, message {}", sendResult.getProducerRecord().value());
+                log.info("The message has been successfully sent, message {}", sendResult.getProducerRecord().value());
             }
         });
     }

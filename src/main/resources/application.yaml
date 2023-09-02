@@ -16,8 +16,8 @@ cloud:
     region:
       static: eu-central-1
     credentials:
-      access-key: AKIA3L7O27OZ5M6AXXX2
-      secret-key: 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
+      access-key: abc
+      secret-key: abc
     stack:
       auto: false
 spring:
@@ -25,3 +25,4 @@ spring:
     bootstrap-servers: localhost:29092
     producer:
       bootstrap-servers: localhost:29092
+    schemaRegistryUrl: http://localhost:8081
