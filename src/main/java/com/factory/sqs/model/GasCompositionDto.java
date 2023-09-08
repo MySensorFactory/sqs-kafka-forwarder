@@ -2,19 +2,40 @@ package com.factory.sqs.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public record GasCompositionDto(String label, long timestamp, GasCompositionData compositionData) {
+@NoArgsConstructor
+@Getter
+@EqualsAndHashCode
+public final class GasCompositionDto {
+    private String label;
+    private String eventKey;
+    private long timestamp;
+    private GasCompositionData compositionData;
+
     @JsonCreator
     public GasCompositionDto(
             @JsonProperty("label") final String label,
+            @JsonProperty("event_key") final String eventKey,
             @JsonProperty("timestamp") final long timestamp,
             @JsonProperty("gas_composition") final GasCompositionData compositionData) {
         this.label = label;
+        this.eventKey = eventKey;
         this.timestamp = timestamp;
         this.compositionData = compositionData;
     }
 
-    public record GasCompositionData(float h2, float n2, float nh3, float o2, float co2) {
+    @NoArgsConstructor
+    @Getter
+    @EqualsAndHashCode
+    public static final class GasCompositionData {
+        private float h2;
+        private float n2;
+        private float nh3;
+        private float o2;
+        private float co2;
 
         @JsonCreator
         public GasCompositionData(@JsonProperty("h2") final float h2,

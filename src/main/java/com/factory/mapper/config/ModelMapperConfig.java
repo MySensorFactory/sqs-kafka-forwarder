@@ -43,143 +43,136 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper(final ObjectMapper objectMapper) {
         var mapper = new ModelMapper();
-        mapper.addConverter(createMessagePressureConverter(objectMapper));
-        mapper.addConverter(createMessageTemperatureConverter(objectMapper));
-        mapper.addConverter(createMessageFlowRateConverter(objectMapper));
-        mapper.addConverter(createMessageGasCompositionConverter(objectMapper));
-        mapper.addConverter(createMessageNoiseAndVibrationConverter(objectMapper));
+        mapper.createTypeMap(Message.class, PressureDto.class).setConverter(createDtoConverter(objectMapper, PressureDto.class));
+        mapper.createTypeMap(Message.class, TemperatureDto.class).setConverter(createDtoConverter(objectMapper, TemperatureDto.class));
+        mapper.createTypeMap(Message.class, FlowRateDto.class).setConverter(createDtoConverter(objectMapper, FlowRateDto.class));
+        mapper.createTypeMap(Message.class, GasCompositionDto.class).setConverter(createDtoConverter(objectMapper, GasCompositionDto.class));
+        mapper.createTypeMap(Message.class, NoiseAndVibrationDto.class).setConverter(createDtoConverter(objectMapper, NoiseAndVibrationDto.class));
+        mapper.addConverter(createMessagePressureConverter());
+        mapper.addConverter(createMessageTemperatureConverter());
+        mapper.addConverter(createMessageFlowRateConverter());
+        mapper.addConverter(createMessageGasCompositionConverter());
+        mapper.addConverter(createMessageNoiseAndVibrationConverter());
         return mapper;
     }
 
-    private static Converter<Message, Pressure> createMessagePressureConverter(final ObjectMapper objectMapper) {
+    private static <T> Converter<Message, T> createDtoConverter(final ObjectMapper objectMapper, final Class<T> dtoClass) {
         return new AbstractConverter<>() {
             @Override
             @SneakyThrows
-            protected Pressure convert(final Message source) {
+            protected T convert(final Message source) {
                 if (Objects.isNull(source)) {
                     return null;
                 }
-                PressureDto dto = getPressureDto(source);
+                return getDto(source, dtoClass);
+            }
+
+            private T getDto(final Message source, final Class<T> dtoClass) throws JsonProcessingException {
+                var messageBody = objectMapper.readTree(source.getBody());
+                return objectMapper.readValue(messageBody.get(MESSAGE).asText(), dtoClass);
+            }
+        };
+    }
+
+    private static Converter<PressureDto, Pressure> createMessagePressureConverter() {
+        return new AbstractConverter<>() {
+            @Override
+            @SneakyThrows
+            protected Pressure convert(final PressureDto dto) {
+                if (Objects.isNull(dto)) {
+                    return null;
+                }
                 return Pressure.newBuilder()
                         .setData(PressureDataRecord.newBuilder()
-                                .setPressure(dto.pressure().pressure())
+                                .setPressure(dto.getPressure().getPressure())
                                 .build())
-                        .setLabel(dto.label())
-                        .setTimestamp(dto.timestamp())
+                        .setLabel(dto.getLabel())
+                        .setTimestamp(dto.getTimestamp())
                         .build();
-            }
-
-            private PressureDto getPressureDto(final Message source) throws JsonProcessingException {
-                var messageBody = objectMapper.readTree(source.getBody());
-                return objectMapper.readValue(messageBody.get(MESSAGE).asText(), PressureDto.class);
             }
         };
     }
 
-    private static Converter<Message, Temperature> createMessageTemperatureConverter(final ObjectMapper objectMapper) {
+    private static Converter<TemperatureDto, Temperature> createMessageTemperatureConverter() {
         return new AbstractConverter<>() {
             @Override
             @SneakyThrows
-            protected Temperature convert(final Message source) {
-                if (Objects.isNull(source)) {
+            protected Temperature convert(final TemperatureDto dto) {
+                if (Objects.isNull(dto)) {
                     return null;
                 }
-                TemperatureDto dto = getTemperatureDto(source);
                 return Temperature.newBuilder()
                         .setData(TemperatureDataRecord.newBuilder()
-                                .setTemperature(dto.temperature().temperature())
+                                .setTemperature(dto.getTemperature().getTemperature())
                                 .build())
-                        .setLabel(dto.label())
-                        .setTimestamp(dto.timestamp())
+                        .setLabel(dto.getLabel())
+                        .setTimestamp(dto.getTimestamp())
                         .build();
-            }
-
-            private TemperatureDto getTemperatureDto(final Message source) throws JsonProcessingException {
-                var messageBody = objectMapper.readTree(source.getBody());
-                return objectMapper.readValue(messageBody.get(MESSAGE).asText(), TemperatureDto.class);
             }
         };
     }
 
-    private static Converter<Message, FlowRate> createMessageFlowRateConverter(final ObjectMapper objectMapper) {
+    private static Converter<FlowRateDto, FlowRate> createMessageFlowRateConverter() {
         return new AbstractConverter<>() {
             @Override
             @SneakyThrows
-            protected FlowRate convert(final Message source) {
-                if (Objects.isNull(source)) {
+            protected FlowRate convert(final FlowRateDto dto) {
+                if (Objects.isNull(dto)) {
                     return null;
                 }
-                FlowRateDto dto = getTemperatureDto(source);
                 return FlowRate.newBuilder()
                         .setData(FlowRateDataRecord.newBuilder()
-                                .setFlowRate(dto.flowRateData().flowRate())
+                                .setFlowRate(dto.getFlowRateData().getFlowRate())
                                 .build())
-                        .setLabel(dto.label())
-                        .setTimestamp(dto.timestamp())
+                        .setLabel(dto.getLabel())
+                        .setTimestamp(dto.getTimestamp())
                         .build();
-            }
-
-            private FlowRateDto getTemperatureDto(final Message source) throws JsonProcessingException {
-                var messageBody = objectMapper.readTree(source.getBody());
-                return objectMapper.readValue(messageBody.get(MESSAGE).asText(), FlowRateDto.class);
             }
         };
     }
 
-    private static Converter<Message, GasComposition> createMessageGasCompositionConverter(final ObjectMapper objectMapper) {
+    private static Converter<GasCompositionDto, GasComposition> createMessageGasCompositionConverter() {
         return new AbstractConverter<>() {
             @Override
             @SneakyThrows
-            protected GasComposition convert(final Message source) {
-                if (Objects.isNull(source)) {
+            protected GasComposition convert(final GasCompositionDto dto) {
+                if (Objects.isNull(dto)) {
                     return null;
                 }
-                GasCompositionDto dto = getTemperatureDto(source);
                 return GasComposition.newBuilder()
                         .setData(GasCompositionDataRecord.newBuilder()
-                                .setCo2(dto.compositionData().co2())
-                                .setH2(dto.compositionData().h2())
-                                .setNh3(dto.compositionData().nh3())
-                                .setO2(dto.compositionData().o2())
-                                .setN2(dto.compositionData().n2())
+                                .setCo2(dto.getCompositionData().getCo2())
+                                .setH2(dto.getCompositionData().getH2())
+                                .setNh3(dto.getCompositionData().getNh3())
+                                .setO2(dto.getCompositionData().getO2())
+                                .setN2(dto.getCompositionData().getN2())
                                 .build())
-                        .setLabel(dto.label())
-                        .setTimestamp(dto.timestamp())
+                        .setLabel(dto.getLabel())
+                        .setTimestamp(dto.getTimestamp())
                         .build();
-            }
-
-            private GasCompositionDto getTemperatureDto(final Message source) throws JsonProcessingException {
-                var messageBody = objectMapper.readTree(source.getBody());
-                return objectMapper.readValue(messageBody.get(MESSAGE).asText(), GasCompositionDto.class);
             }
         };
     }
 
-    private static Converter<Message, NoiseAndVibration> createMessageNoiseAndVibrationConverter(final ObjectMapper objectMapper) {
+    private static Converter<NoiseAndVibrationDto, NoiseAndVibration> createMessageNoiseAndVibrationConverter() {
         return new AbstractConverter<>() {
             @Override
             @SneakyThrows
-            protected NoiseAndVibration convert(final Message source) {
-                if (Objects.isNull(source)) {
+            protected NoiseAndVibration convert(final NoiseAndVibrationDto dto) {
+                if (Objects.isNull(dto)) {
                     return null;
                 }
-                NoiseAndVibrationDto dto = getTemperatureDto(source);
                 return NoiseAndVibration.newBuilder()
                         .setNoiseData(NoiseDataRecord.newBuilder()
-                                .setLevel(dto.noiseData().level())
+                                .setLevel(dto.getNoiseData().getLevel())
                                 .build())
                         .setVibrationData(VibrationDataRecord.newBuilder()
-                                .setAmplitude(dto.vibrationData().amplitude())
-                                .setFrequency(dto.vibrationData().frequency())
+                                .setAmplitude(dto.getVibrationData().getAmplitude())
+                                .setFrequency(dto.getVibrationData().getFrequency())
                                 .build())
-                        .setLabel(dto.label())
-                        .setTimestamp(dto.timestamp())
+                        .setLabel(dto.getLabel())
+                        .setTimestamp(dto.getTimestamp())
                         .build();
-            }
-
-            private NoiseAndVibrationDto getTemperatureDto(final Message source) throws JsonProcessingException {
-                var messageBody = objectMapper.readTree(source.getBody());
-                return objectMapper.readValue(messageBody.get(MESSAGE).asText(), NoiseAndVibrationDto.class);
             }
         };
     }
