@@ -8,16 +8,18 @@
         <version>1.0.0</version>
         <relativePath/>
     </parent>
-    <properties>
-        <spring-cloud-aws-context.version>2.3.1</spring-cloud-aws-context.version>
-        <avro.version>1.8.2</avro.version>
-    </properties>
+
+    <repositories>
+        <repository>
+            <id>confluent.io</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
             <groupId>io.awspring.cloud</groupId>
             <artifactId>spring-cloud-aws-context</artifactId>
-            <version>${spring-cloud-aws-context.version}</version>
         </dependency>
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -45,6 +47,10 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
         </dependency>
     </dependencies>
 
