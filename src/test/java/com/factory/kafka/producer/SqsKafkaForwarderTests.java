@@ -12,6 +12,8 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.UUID;
+
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -46,7 +48,7 @@ class SqsKafkaForwarderTests {
         when(kafkaTemplate.send(eq(topicName), anyString(), eq(message)))
                 .thenReturn(listenableFuture);
 
-        kafkaDataForwarder.sendMessage(topicName, Pressure.newBuilder().build());
+        kafkaDataForwarder.sendMessage(topicName, UUID.randomUUID().toString(), Pressure.newBuilder().build());
 
         verify(listenableFuture, times(1))
                 .addCallback(any(ListenableFutureCallback.class));
@@ -67,7 +69,7 @@ class SqsKafkaForwarderTests {
             return null;
         }).when(listenableFuture).addCallback(any(ListenableFutureCallback.class));
 
-        kafkaDataForwarder.sendMessage(topicName, Pressure.newBuilder().build());
+        kafkaDataForwarder.sendMessage(topicName, UUID.randomUUID().toString(), Pressure.newBuilder().build());
 
         verify(listenableFuture, times(1))
                 .addCallback(any(ListenableFutureCallback.class));

@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+import java.util.UUID;
+
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,7 +38,7 @@ class SQSMessageListenerTest {
         sqsMessageListener.receivePressureMessage(new Message());
 
         verify(kafkaDataForwarder, times(1))
-                .sendMessage(topicName, Pressure.newBuilder().build());
+                .sendMessage(topicName, UUID.randomUUID().toString(), Pressure.newBuilder().build());
     }
 }
 

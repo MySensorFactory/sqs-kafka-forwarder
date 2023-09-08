@@ -6,16 +6,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 @Slf4j
-public class KafkaDataForwarder <T> {
+public class KafkaDataForwarder<T> {
 
     private final KafkaTemplate<String, T> kafkaTemplate;
 
-    public void sendMessage(final String topicName, final T message) {
-        var future = kafkaTemplate.send(topicName, UUID.randomUUID().toString(), message);
+    public void sendMessage(final String topicName, final String key, final T message) {
+        var future = kafkaTemplate.send(topicName, key, message);
 
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
@@ -25,7 +23,7 @@ public class KafkaDataForwarder <T> {
 
             @Override
             public void onSuccess(final SendResult<String, T> sendResult) {
-                log.info("The message has been successfully sent, message {}", sendResult.getProducerRecord().value());
+                log.debug("The message has been successfully sent, message {}", sendResult.getProducerRecord().value());
             }
         });
     }

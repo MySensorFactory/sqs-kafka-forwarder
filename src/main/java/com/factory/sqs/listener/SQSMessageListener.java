@@ -8,6 +8,11 @@ import com.factory.message.GasComposition;
 import com.factory.message.NoiseAndVibration;
 import com.factory.message.Pressure;
 import com.factory.message.Temperature;
+import com.factory.sqs.model.FlowRateDto;
+import com.factory.sqs.model.GasCompositionDto;
+import com.factory.sqs.model.NoiseAndVibrationDto;
+import com.factory.sqs.model.PressureDto;
+import com.factory.sqs.model.TemperatureDto;
 import io.awspring.cloud.messaging.listener.SqsMessageDeletionPolicy;
 import io.awspring.cloud.messaging.listener.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
@@ -33,35 +38,40 @@ public class SQSMessageListener {
     @SqsListener(value = "${sqs.pressureQueue}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     @SneakyThrows
     public void receivePressureMessage(@Payload Message message) {
-        var kafkaMessage = modelMapper.map(message, Pressure.class);
-        pressureKafkaDataForwarder.sendMessage(kafkaConfig.getPressureTopic(), kafkaMessage);
+        var dto = modelMapper.map(message, PressureDto.class);
+        var kafkaMessage = modelMapper.map(dto, Pressure.class);
+        pressureKafkaDataForwarder.sendMessage(kafkaConfig.getPressureTopic(), dto.getEventKey(), kafkaMessage);
     }
 
     @SqsListener(value = "${sqs.temperatureQueue}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     @SneakyThrows
     public void receiveTemperatureMessage(@Payload Message message) {
-        var kafkaMessage = modelMapper.map(message, Temperature.class);
-        temperatureKafkaDataForwarder.sendMessage(kafkaConfig.getTemperatureTopic(), kafkaMessage);
+        var dto = modelMapper.map(message, TemperatureDto.class);
+        var kafkaMessage = modelMapper.map(dto, Temperature.class);
+        temperatureKafkaDataForwarder.sendMessage(kafkaConfig.getTemperatureTopic(), dto.getEventKey(), kafkaMessage);
     }
 
     @SqsListener(value = "${sqs.flowRateQueue}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     @SneakyThrows
     public void receiveFlowRateMessage(@Payload Message message) {
-        var kafkaMessage = modelMapper.map(message, FlowRate.class);
-        flowRateKafkaDataForwarder.sendMessage(kafkaConfig.getFlowRateTopic(), kafkaMessage);
+        var dto = modelMapper.map(message, FlowRateDto.class);
+        var kafkaMessage = modelMapper.map(dto, FlowRate.class);
+        flowRateKafkaDataForwarder.sendMessage(kafkaConfig.getFlowRateTopic(), dto.getEventKey(), kafkaMessage);
     }
 
     @SqsListener(value = "${sqs.noiseAndVibrationQueue}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     @SneakyThrows
     public void receiveNoiseAndVibrationMessage(@Payload Message message) {
-        var kafkaMessage = modelMapper.map(message, NoiseAndVibration.class);
-        noiseAndVibrationKafkaDataForwarder.sendMessage(kafkaConfig.getNoiseAndVibrationTopic(), kafkaMessage);
+        var dto = modelMapper.map(message, NoiseAndVibrationDto.class);
+        var kafkaMessage = modelMapper.map(dto, NoiseAndVibration.class);
+        noiseAndVibrationKafkaDataForwarder.sendMessage(kafkaConfig.getNoiseAndVibrationTopic(), dto.getEventKey(), kafkaMessage);
     }
 
     @SqsListener(value = "${sqs.gasCompositionQueue}", deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
     @SneakyThrows
     public void receiveGasCompositionMessage(@Payload Message message) {
-        var kafkaMessage = modelMapper.map(message, GasComposition.class);
-        gasCompositionKafkaDataForwarder.sendMessage(kafkaConfig.getGasCompositionTopic(), kafkaMessage);
+        var dto = modelMapper.map(message, GasCompositionDto.class);
+        var kafkaMessage = modelMapper.map(dto, GasComposition.class);
+        gasCompositionKafkaDataForwarder.sendMessage(kafkaConfig.getGasCompositionTopic(), dto.getEventKey(), kafkaMessage);
     }
 }
