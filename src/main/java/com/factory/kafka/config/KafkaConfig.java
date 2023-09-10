@@ -2,11 +2,17 @@ package com.factory.kafka.config;
 
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class KafkaConfig {
-    private String temperatureTopic;
-    private String pressureTopic;
-    private String noiseAndVibrationTopic;
-    private String gasCompositionTopic;
-    private String flowRateTopic;
+    private Map<String, SensorConfig> sensorConfig;
+
+    public String getTopicName(final String sensorName){
+        return sensorConfig.get(sensorName).getTopicName();
+    }
+
+    public String getClientId(final String sensorName){
+        return sensorConfig.get(sensorName).getClientId();
+    }
 }

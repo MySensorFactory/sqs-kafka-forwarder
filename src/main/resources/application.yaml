@@ -6,11 +6,22 @@ sqs:
   flowRateQueue: FlowRateSQSQueue
   isLocal: true
 kafka:
-  temperatureTopic: temperature
-  pressureTopic: pressure
-  noiseAndVibrationTopic: noiseAndVibration
-  gasCompositionTopic: gasComposition
-  flowRateTopic: flowRate
+  sensorConfig:
+    temperature:
+      topicName: temperature
+      clientId: temperature
+    pressure:
+      topicName: pressure
+      clientId: pressure
+    noiseAndVibration:
+      topicName: noiseAndVibration
+      clientId: noiseAndVibration
+    gasComposition:
+      topicName: gasComposition
+      clientId: gasComposition
+    flowRate:
+      topicName: flowRate
+      clientId: flowRate
 cloud:
   aws:
     region:
@@ -29,4 +40,7 @@ spring:
     bootstrap-servers: localhost:29092
     producer:
       bootstrap-servers: localhost:29092
+    transactionIdPrefix: sqsForwarder
     schemaRegistryUrl: http://localhost:8081
+    autoRegisterSchemas: true
+    useSchemasLatestVersion: true

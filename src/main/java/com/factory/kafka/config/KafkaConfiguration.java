@@ -20,7 +20,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS;
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION;
 import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.CLIENT_ID_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
 
@@ -37,86 +40,92 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, Pressure> pressureProducerFactory() {
-        return getKafkaProducerFactory(kafkaNativeConfig);
+    public ProducerFactory<String, Pressure> pressureProducerFactory(final KafkaConfig kafkaConfig) {
+        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("pressure"));
     }
 
     @Bean
-    public ProducerFactory<String, Temperature> temperatureProducerFactory() {
-        return getKafkaProducerFactory(kafkaNativeConfig);
+    public ProducerFactory<String, Temperature> temperatureProducerFactory(final KafkaConfig kafkaConfig) {
+        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("temperature"));
     }
 
     @Bean
-    public ProducerFactory<String, GasComposition> gasCompositionProducerFactory() {
-        return getKafkaProducerFactory(kafkaNativeConfig);
+    public ProducerFactory<String, GasComposition> gasCompositionProducerFactory(final KafkaConfig kafkaConfig) {
+        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("gasComposition"));
     }
 
     @Bean
-    public ProducerFactory<String, NoiseAndVibration> noiseAndVibrationProducerFactory() {
-        return getKafkaProducerFactory(kafkaNativeConfig);
+    public ProducerFactory<String, NoiseAndVibration> noiseAndVibrationProducerFactory(final KafkaConfig kafkaConfig) {
+        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("noiseAndVibration"));
     }
 
     @Bean
-    public ProducerFactory<String, FlowRate> flowRateProducerFactory() {
-        return getKafkaProducerFactory(kafkaNativeConfig);
+    public ProducerFactory<String, FlowRate> flowRateProducerFactory(final KafkaConfig kafkaConfig) {
+        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("flowRate"));
     }
 
     @Bean
-    public KafkaTemplate<String, Pressure> pressureKafkaTemplate() {
-        return new KafkaTemplate<>(pressureProducerFactory());
+    public KafkaTemplate<String, Pressure> pressureKafkaTemplate(final KafkaConfig kafkaConfig) {
+        return new KafkaTemplate<>(pressureProducerFactory(kafkaConfig));
     }
 
     @Bean
-    public KafkaTemplate<String, Temperature> temperatureKafkaTemplate() {
-        return new KafkaTemplate<>(temperatureProducerFactory());
+    public KafkaTemplate<String, Temperature> temperatureKafkaTemplate(final KafkaConfig kafkaConfig) {
+        return new KafkaTemplate<>(temperatureProducerFactory(kafkaConfig));
     }
 
     @Bean
-    public KafkaTemplate<String, GasComposition> gasCompositionKafkaTemplate() {
-        return new KafkaTemplate<>(gasCompositionProducerFactory());
+    public KafkaTemplate<String, GasComposition> gasCompositionKafkaTemplate(final KafkaConfig kafkaConfig) {
+        return new KafkaTemplate<>(gasCompositionProducerFactory(kafkaConfig));
     }
 
     @Bean
-    public KafkaTemplate<String, NoiseAndVibration> noiseAndVibrationKafkaTemplate() {
-        return new KafkaTemplate<>(noiseAndVibrationProducerFactory());
+    public KafkaTemplate<String, NoiseAndVibration> noiseAndVibrationKafkaTemplate(final KafkaConfig kafkaConfig) {
+        return new KafkaTemplate<>(noiseAndVibrationProducerFactory(kafkaConfig));
     }
 
     @Bean
-    public KafkaTemplate<String, FlowRate> flowRateKafkaTemplate() {
-        return new KafkaTemplate<>(flowRateProducerFactory());
+    public KafkaTemplate<String, FlowRate> flowRateKafkaTemplate(final KafkaConfig kafkaConfig) {
+        return new KafkaTemplate<>(flowRateProducerFactory(kafkaConfig));
     }
 
     @Bean
-    public KafkaDataForwarder<Pressure> pressureKafkaDataForwarder() {
-        return new KafkaDataForwarder<>(pressureKafkaTemplate());
+    public KafkaDataForwarder<Pressure> pressureKafkaDataForwarder(final KafkaConfig kafkaConfig) {
+        return new KafkaDataForwarder<>(pressureKafkaTemplate(kafkaConfig));
     }
 
     @Bean
-    public KafkaDataForwarder<Temperature> temperatureKafkaDataForwarder() {
-        return new KafkaDataForwarder<>(temperatureKafkaTemplate());
+    public KafkaDataForwarder<Temperature> temperatureKafkaDataForwarder(final KafkaConfig kafkaConfig) {
+        return new KafkaDataForwarder<>(temperatureKafkaTemplate(kafkaConfig));
     }
 
     @Bean
-    public KafkaDataForwarder<GasComposition> gasCompositionKafkaDataForwarder() {
-        return new KafkaDataForwarder<>(gasCompositionKafkaTemplate());
+    public KafkaDataForwarder<GasComposition> gasCompositionKafkaDataForwarder(final KafkaConfig kafkaConfig) {
+        return new KafkaDataForwarder<>(gasCompositionKafkaTemplate(kafkaConfig));
     }
 
     @Bean
-    public KafkaDataForwarder<NoiseAndVibration> noiseAndVibrationKafkaDataForwarder() {
-        return new KafkaDataForwarder<>(noiseAndVibrationKafkaTemplate());
+    public KafkaDataForwarder<NoiseAndVibration> noiseAndVibrationKafkaDataForwarder(final KafkaConfig kafkaConfig) {
+        return new KafkaDataForwarder<>(noiseAndVibrationKafkaTemplate(kafkaConfig));
     }
 
     @Bean
-    public KafkaDataForwarder<FlowRate> flowRateKafkaDataForwarder() {
-        return new KafkaDataForwarder<>(flowRateKafkaTemplate());
+    public KafkaDataForwarder<FlowRate> flowRateKafkaDataForwarder(final KafkaConfig kafkaConfig) {
+        return new KafkaDataForwarder<>(flowRateKafkaTemplate(kafkaConfig));
     }
 
-    private <T> DefaultKafkaProducerFactory<String, T> getKafkaProducerFactory(final KafkaNativeConfig kafkaNativeConfig) {
+    private <T> DefaultKafkaProducerFactory<String, T> getKafkaProducerFactory(final KafkaNativeConfig kafkaNativeConfig,
+                                                                               final String clientId) {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(BOOTSTRAP_SERVERS_CONFIG, kafkaNativeConfig.getBootstrapAddress());
         configProps.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, AvroSerializer.class);
+        configProps.put(CLIENT_ID_CONFIG, clientId);
         configProps.put(SCHEMA_REGISTRY_URL_CONFIG, kafkaNativeConfig.getSchemaRegistryUrl());
-        return new DefaultKafkaProducerFactory<>(configProps);
+        configProps.put(AUTO_REGISTER_SCHEMAS, kafkaNativeConfig.getAutoRegisterSchemas());
+        configProps.put(USE_LATEST_VERSION, kafkaNativeConfig.getUseSchemasLatestVersion());
+        var result = new DefaultKafkaProducerFactory<String, T>(configProps);
+        result.setTransactionIdPrefix(kafkaNativeConfig.getTransactionIdPrefix() + "-" + clientId);
+        return result;
     }
 }

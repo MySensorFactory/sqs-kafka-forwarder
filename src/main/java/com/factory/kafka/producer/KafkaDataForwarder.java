@@ -13,7 +13,7 @@ public class KafkaDataForwarder<T> {
     private final KafkaTemplate<String, T> kafkaTemplate;
 
     public void sendMessage(final String topicName, final String key, final T message) {
-        var future = kafkaTemplate.send(topicName, key, message);
+        var future = kafkaTemplate.executeInTransaction(t -> t.send(topicName, key, message));
 
         future.addCallback(new ListenableFutureCallback<>() {
             @Override

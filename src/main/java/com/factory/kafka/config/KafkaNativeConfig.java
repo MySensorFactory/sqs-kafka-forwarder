@@ -12,4 +12,13 @@ public class KafkaNativeConfig {
 
     @Value(value = "${spring.kafka.schemaRegistryUrl}")
     private String schemaRegistryUrl;
+
+    @Value(value = "${spring.kafka.autoRegisterSchemas:false}")
+    private Boolean autoRegisterSchemas;
+
+    @Value(value = "${spring.kafka.useSchemasLatestVersion:true}")
+    private Boolean useSchemasLatestVersion;
+
+    @Value(value = "${spring.kafka.transactionIdPrefix}")
+    private String transactionIdPrefix;
 }
