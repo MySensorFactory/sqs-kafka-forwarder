@@ -37,10 +37,10 @@ spring:
       - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: kafka-cluster:9092
     producer:
-      bootstrap-servers: localhost:29092
+      bootstrap-servers: kafka-cluster:29092
     transactionIdPrefix: sqsForwarder
-    schemaRegistryUrl: http://localhost:8081
+    schemaRegistryUrl: http://schema-registry-svc:8081
     autoRegisterSchemas: true
     useSchemasLatestVersion: true
