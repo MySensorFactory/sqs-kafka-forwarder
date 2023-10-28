@@ -27,8 +27,8 @@ cloud:
     region:
       static: eu-central-1
     credentials:
-      access-key: abc
-      secret-key: abc
+      access-key: AKIA3L7O27OZVJLXMEMS
+      secret-key: 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
     stack:
       auto: false
 spring:
