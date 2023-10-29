@@ -32,10 +32,10 @@ public final class FlowRateDto {
     @NoArgsConstructor
     @EqualsAndHashCode
     public static final class FlowRateData {
-        private float flowRate;
+        private double flowRate;
 
         @JsonCreator
-        public FlowRateData(@JsonProperty("flow_rate") final float flowRate) {
+        public FlowRateData(@JsonProperty("flow_rate") final double flowRate) {
             this.flowRate = flowRate;
         }
 
