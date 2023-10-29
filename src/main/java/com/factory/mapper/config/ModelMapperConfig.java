@@ -122,7 +122,7 @@ public class ModelMapperConfig {
                 }
                 return FlowRate.newBuilder()
                         .setData(FlowRateDataRecord.newBuilder()
-                                .setFlowRate((float)dto.getFlowRateData().getFlowRate())
+                                .setFlowRate(dto.getFlowRate())
                                 .build())
                         .setLabel(dto.getLabel())
                         .setTimestamp(dto.getTimestamp())

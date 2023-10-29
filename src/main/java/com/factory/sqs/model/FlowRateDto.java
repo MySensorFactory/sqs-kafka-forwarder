@@ -13,31 +13,18 @@ public final class FlowRateDto {
     private String label;
     private String eventKey;
     private long timestamp;
-    private FlowRateData flowRateData;
+    private float flowRate;
 
     @JsonCreator
     public FlowRateDto(
             @JsonProperty("label") final String label,
             @JsonProperty("event_key") final String eventKey,
             @JsonProperty("timestamp") final long timestamp,
-            @JsonProperty("flow_rate") final FlowRateData flowRateData
+            @JsonProperty("flow_rate") final float flowRate
     ) {
         this.label = label;
         this.timestamp = timestamp;
-        this.flowRateData = flowRateData;
+        this.flowRate = flowRate;
         this.eventKey = eventKey;
-    }
-
-    @Getter
-    @NoArgsConstructor
-    @EqualsAndHashCode
-    public static final class FlowRateData {
-        private double flowRate;
-
-        @JsonCreator
-        public FlowRateData(@JsonProperty("flow_rate") final double flowRate) {
-            this.flowRate = flowRate;
-        }
-
     }
 }
