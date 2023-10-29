@@ -5,6 +5,9 @@ env:
         PROJECT_NAME: sqs-kafka-forwarder
         DOCKER_BUILD: yes
         BUILD_TYPE: default
+        S3_DEPLOY_CONFIG_DIR: applications/sqs-kafka-forwarder/
+        BUCKET_NAME: factory-ci-cd
+        S3_CICD_FUNCTIONS_DESTINATION: applications/cicd
 
 phases: 
     install:
@@ -21,6 +24,7 @@ phases:
             - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain factory --domain-owner 781648067507 --region eu-central-1 --query authorizationToken --output text`
             - echo "Pulling settings.xml"
             - aws s3 cp s3://factory-ci-cd/settings.xml settings.xml
+            - aws s3 cp s3://${BUCKET_NAME}/${S3_CICD_FUNCTIONS_DESTINATION}/ ./ --recursive
     build:
         commands:
             - echo "Building ..."
@@ -36,6 +40,7 @@ phases:
             - docker push ${DOCKER_USERNAME}/${PROJECT_NAME}
             - echo "Sending application manifests to S3 ..."
             - aws s3 cp kube s3://factory-ci-cd/applications/$PROJECT_NAME/ --recursive
+            - python3 functions/deploy_notifier.py
 cache:
     paths:
         - '/root/.m2/**/*'
