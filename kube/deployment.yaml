@@ -15,7 +15,7 @@ spec:
         app: sqs-kafka-forwarder
     spec:
       containers:
-        - name: demo1
+        - name: sqs-kafka-forwarder
           imagePullPolicy: Always
           image: juliantheking/sqs-kafka-forwarder
           ports:
