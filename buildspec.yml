@@ -3,7 +3,6 @@ version: 0.2
 env:
     variables:
         PROJECT_NAME: sqs-kafka-forwarder
-        DOCKER_BUILD: yes
         BUILD_TYPE: default
         S3_DEPLOY_CONFIG_DIR: applications/sqs-kafka-forwarder/
         BUCKET_NAME: factory-ci-cd
