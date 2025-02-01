@@ -1,6 +1,6 @@
 package com.factory.mapper.config;
 
-import com.amazonaws.services.sqs.model.Message;
+//import com.amazonaws.services.sqs.model.Message;
 import com.factory.message.FlowRate;
 import com.factory.message.FlowRateDataRecord;
 import com.factory.message.GasComposition;
@@ -26,6 +26,7 @@ import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.services.sqs.model.Message;
 
 import java.util.Objects;
 
@@ -68,7 +69,7 @@ public class ModelMapperConfig {
             }
 
             private T getDto(final Message source, final Class<T> dtoClass) throws JsonProcessingException {
-                var messageBody = objectMapper.readTree(source.getBody());
+                var messageBody = objectMapper.readTree(source.body());
                 return objectMapper.readValue(messageBody.get(MESSAGE).asText(), dtoClass);
             }
         };

@@ -1,24 +1,21 @@
 package com.factory.kafka.config;
 
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@Configuration
-@Getter
+import java.util.List;
+
+@Data
+@ConfigurationProperties("spring.kafka")
 public class KafkaNativeConfig {
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    private String bootstrapAddress;
 
-    @Value(value = "${spring.kafka.schemaRegistryUrl}")
+    private List<String> bootstrapServers;
+
     private String schemaRegistryUrl;
 
-    @Value(value = "${spring.kafka.autoRegisterSchemas:false}")
-    private Boolean autoRegisterSchemas;
+    private Boolean autoRegisterSchemas = false;
 
-    @Value(value = "${spring.kafka.useSchemasLatestVersion:true}")
-    private Boolean useSchemasLatestVersion;
+    private Boolean useSchemasLatestVersion = true;
 
-    @Value(value = "${spring.kafka.transactionIdPrefix}")
     private String transactionIdPrefix;
 }
