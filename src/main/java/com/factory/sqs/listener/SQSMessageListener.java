@@ -2,14 +2,12 @@ package com.factory.sqs.listener;
 
 import com.factory.kafka.config.KafkaConfig;
 import com.factory.kafka.producer.KafkaDataForwarder;
-import com.factory.message.FlowRate;
-import com.factory.message.GasComposition;
-import com.factory.message.NoiseAndVibration;
+import com.factory.message.Humidity;
 import com.factory.message.Pressure;
 import com.factory.message.Temperature;
-import com.factory.sqs.model.FlowRateDto;
-import com.factory.sqs.model.GasCompositionDto;
-import com.factory.sqs.model.NoiseAndVibrationDto;
+import com.factory.message.Vibration;
+import com.factory.sqs.model.HumidityDto;
+import com.factory.sqs.model.VibrationDto;
 import com.factory.sqs.model.PressureDto;
 import com.factory.sqs.model.TemperatureDto;
 import io.awspring.cloud.sqs.annotation.SqsListener ;
@@ -28,9 +26,8 @@ public class SQSMessageListener {
 
     private final KafkaDataForwarder<Pressure> pressureKafkaDataForwarder;
     private final KafkaDataForwarder<Temperature> temperatureKafkaDataForwarder;
-    private final KafkaDataForwarder<FlowRate> flowRateKafkaDataForwarder;
-    private final KafkaDataForwarder<NoiseAndVibration> noiseAndVibrationKafkaDataForwarder;
-    private final KafkaDataForwarder<GasComposition> gasCompositionKafkaDataForwarder;
+    private final KafkaDataForwarder<Humidity> humidityKafkaDataForwarder;
+    private final KafkaDataForwarder<Vibration> vibrationKafkaDataForwarder;
     private final KafkaConfig kafkaConfig;
     private final ModelMapper modelMapper;
 
@@ -53,24 +50,16 @@ public class SQSMessageListener {
     @SqsListener(value = "${sqs.flowRateQueue}")
     @SneakyThrows
     public void receiveFlowRateMessage(@Payload Message message) {
-        var dto = modelMapper.map(message, FlowRateDto.class);
-        var kafkaMessage = modelMapper.map(dto, FlowRate.class);
-        flowRateKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("flowRate"), dto.getEventKey(), kafkaMessage);
+        var dto = modelMapper.map(message, HumidityDto.class);
+        var kafkaMessage = modelMapper.map(dto, Humidity.class);
+        humidityKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("flowRate"), dto.getEventKey(), kafkaMessage);
     }
 
     @SqsListener(value = "${sqs.noiseAndVibrationQueue}")
     @SneakyThrows
     public void receiveNoiseAndVibrationMessage(@Payload Message message) {
-        var dto = modelMapper.map(message, NoiseAndVibrationDto.class);
-        var kafkaMessage = modelMapper.map(dto, NoiseAndVibration.class);
-        noiseAndVibrationKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("noiseAndVibration"), dto.getEventKey(), kafkaMessage);
-    }
-
-    @SqsListener(value = "${sqs.gasCompositionQueue}")
-    @SneakyThrows
-    public void receiveGasCompositionMessage(@Payload Message message) {
-        var dto = modelMapper.map(message, GasCompositionDto.class);
-        var kafkaMessage = modelMapper.map(dto, GasComposition.class);
-        gasCompositionKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("gasComposition"), dto.getEventKey(), kafkaMessage);
+        var dto = modelMapper.map(message, VibrationDto.class);
+        var kafkaMessage = modelMapper.map(dto, Vibration.class);
+        vibrationKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("noiseAndVibration"), dto.getEventKey(), kafkaMessage);
     }
 }

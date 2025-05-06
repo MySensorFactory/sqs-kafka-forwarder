@@ -5,6 +5,8 @@ sqs:
   gasCompositionQueue: GasCompositionSQSQueue
   flowRateQueue: FlowRateSQSQueue
   isLocal: false
+  vibrationQueue: VibrationSQSQueue
+  humidityQueue: HumiditySQSQueue
 kafka:
   sensorConfig:
     temperature:
@@ -13,15 +15,12 @@ kafka:
     pressure:
       topicName: pressure
       clientId: pressure
-    noiseAndVibration:
-      topicName: noiseAndVibration
-      clientId: noiseAndVibration
-    gasComposition:
-      topicName: gasComposition
-      clientId: gasComposition
-    flowRate:
-      topicName: flowRate
-      clientId: flowRate
+    vibration:
+      topicName: vibration
+      clientId: vibration
+    humidity:
+      topicName: humidity
+      clientId: humidity
 cloud:
   aws:
     region:

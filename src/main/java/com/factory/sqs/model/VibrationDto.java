@@ -5,26 +5,40 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode
-public final class FlowRateDto {
+@ToString
+public final class VibrationDto {
     private String label;
     private String eventKey;
     private long timestamp;
-    private float flowRate;
+    private VibrationData vibrationData;
 
     @JsonCreator
-    public FlowRateDto(
+    public VibrationDto(
             @JsonProperty("label") final String label,
             @JsonProperty("event_key") final String eventKey,
             @JsonProperty("timestamp") final long timestamp,
-            @JsonProperty("flow_rate") final float flowRate
-    ) {
+            @JsonProperty("vibration") final VibrationData vibrationData) {
         this.label = label;
-        this.timestamp = timestamp;
-        this.flowRate = flowRate;
         this.eventKey = eventKey;
+        this.timestamp = timestamp;
+        this.vibrationData = vibrationData;
+    }
+
+    @NoArgsConstructor
+    @Getter
+    @EqualsAndHashCode
+    @ToString
+    public static final class VibrationData {
+        private float value;
+
+        @JsonCreator
+        public VibrationData(@JsonProperty("value") final float value) {
+            this.value = value;
+        }
     }
 }

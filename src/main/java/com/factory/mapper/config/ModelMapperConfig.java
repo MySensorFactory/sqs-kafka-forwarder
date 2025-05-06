@@ -1,20 +1,16 @@
 package com.factory.mapper.config;
 
 //import com.amazonaws.services.sqs.model.Message;
-import com.factory.message.FlowRate;
-import com.factory.message.FlowRateDataRecord;
-import com.factory.message.GasComposition;
-import com.factory.message.GasCompositionDataRecord;
-import com.factory.message.NoiseAndVibration;
-import com.factory.message.NoiseDataRecord;
+import com.factory.message.Humidity;
+import com.factory.message.HumidityDataRecord;
+import com.factory.message.Vibration;
 import com.factory.message.Pressure;
 import com.factory.message.PressureDataRecord;
 import com.factory.message.Temperature;
 import com.factory.message.TemperatureDataRecord;
 import com.factory.message.VibrationDataRecord;
-import com.factory.sqs.model.FlowRateDto;
-import com.factory.sqs.model.GasCompositionDto;
-import com.factory.sqs.model.NoiseAndVibrationDto;
+import com.factory.sqs.model.HumidityDto;
+import com.factory.sqs.model.VibrationDto;
 import com.factory.sqs.model.PressureDto;
 import com.factory.sqs.model.TemperatureDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -46,13 +42,11 @@ public class ModelMapperConfig {
         var mapper = new ModelMapper();
         mapper.createTypeMap(Message.class, PressureDto.class).setConverter(createDtoConverter(objectMapper, PressureDto.class));
         mapper.createTypeMap(Message.class, TemperatureDto.class).setConverter(createDtoConverter(objectMapper, TemperatureDto.class));
-        mapper.createTypeMap(Message.class, FlowRateDto.class).setConverter(createDtoConverter(objectMapper, FlowRateDto.class));
-        mapper.createTypeMap(Message.class, GasCompositionDto.class).setConverter(createDtoConverter(objectMapper, GasCompositionDto.class));
-        mapper.createTypeMap(Message.class, NoiseAndVibrationDto.class).setConverter(createDtoConverter(objectMapper, NoiseAndVibrationDto.class));
+        mapper.createTypeMap(Message.class, HumidityDto.class).setConverter(createDtoConverter(objectMapper, HumidityDto.class));
+        mapper.createTypeMap(Message.class, VibrationDto.class).setConverter(createDtoConverter(objectMapper, VibrationDto.class));
         mapper.addConverter(createMessagePressureConverter());
         mapper.addConverter(createMessageTemperatureConverter());
-        mapper.addConverter(createMessageFlowRateConverter());
-        mapper.addConverter(createMessageGasCompositionConverter());
+        mapper.addConverter(createMessageHumidityConverter());
         mapper.addConverter(createMessageNoiseAndVibrationConverter());
         return mapper;
     }
@@ -113,17 +107,17 @@ public class ModelMapperConfig {
         };
     }
 
-    private static Converter<FlowRateDto, FlowRate> createMessageFlowRateConverter() {
+    private static Converter<HumidityDto, Humidity> createMessageHumidityConverter() {
         return new AbstractConverter<>() {
             @Override
             @SneakyThrows
-            protected FlowRate convert(final FlowRateDto dto) {
+            protected Humidity convert(final HumidityDto dto) {
                 if (Objects.isNull(dto)) {
                     return null;
                 }
-                return FlowRate.newBuilder()
-                        .setData(FlowRateDataRecord.newBuilder()
-                                .setFlowRate(dto.getFlowRate())
+                return Humidity.newBuilder()
+                        .setData(HumidityDataRecord.newBuilder()
+                                .setHumidity(dto.getValue())
                                 .build())
                         .setLabel(dto.getLabel())
                         .setTimestamp(dto.getTimestamp())
@@ -132,44 +126,17 @@ public class ModelMapperConfig {
         };
     }
 
-    private static Converter<GasCompositionDto, GasComposition> createMessageGasCompositionConverter() {
+    private static Converter<VibrationDto, Vibration> createMessageNoiseAndVibrationConverter() {
         return new AbstractConverter<>() {
             @Override
             @SneakyThrows
-            protected GasComposition convert(final GasCompositionDto dto) {
+            protected Vibration convert(final VibrationDto dto) {
                 if (Objects.isNull(dto)) {
                     return null;
                 }
-                return GasComposition.newBuilder()
-                        .setData(GasCompositionDataRecord.newBuilder()
-                                .setCo2(dto.getCompositionData().getCo2())
-                                .setH2(dto.getCompositionData().getH2())
-                                .setNh3(dto.getCompositionData().getNh3())
-                                .setO2(dto.getCompositionData().getO2())
-                                .setN2(dto.getCompositionData().getN2())
-                                .build())
-                        .setLabel(dto.getLabel())
-                        .setTimestamp(dto.getTimestamp())
-                        .build();
-            }
-        };
-    }
-
-    private static Converter<NoiseAndVibrationDto, NoiseAndVibration> createMessageNoiseAndVibrationConverter() {
-        return new AbstractConverter<>() {
-            @Override
-            @SneakyThrows
-            protected NoiseAndVibration convert(final NoiseAndVibrationDto dto) {
-                if (Objects.isNull(dto)) {
-                    return null;
-                }
-                return NoiseAndVibration.newBuilder()
-                        .setNoiseData(NoiseDataRecord.newBuilder()
-                                .setLevel(dto.getNoiseData().getLevel())
-                                .build())
+                return Vibration.newBuilder()
                         .setVibrationData(VibrationDataRecord.newBuilder()
-                                .setAmplitude(dto.getVibrationData().getAmplitude())
-                                .setFrequency(dto.getVibrationData().getFrequency())
+                                .setVibration(dto.getVibrationData().getValue())
                                 .build())
                         .setLabel(dto.getLabel())
                         .setTimestamp(dto.getTimestamp())

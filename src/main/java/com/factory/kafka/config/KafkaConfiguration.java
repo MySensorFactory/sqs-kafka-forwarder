@@ -1,11 +1,10 @@
 package com.factory.kafka.config;
 
 import com.factory.kafka.producer.KafkaDataForwarder;
-import com.factory.message.FlowRate;
-import com.factory.message.GasComposition;
-import com.factory.message.NoiseAndVibration;
+import com.factory.message.Humidity;
 import com.factory.message.Pressure;
 import com.factory.message.Temperature;
+import com.factory.message.Vibration;
 import com.factory.message.serialization.AvroSerializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -22,10 +21,7 @@ import java.util.Map;
 import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.AUTO_REGISTER_SCHEMAS;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.USE_LATEST_VERSION;
-import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
-import static org.apache.kafka.clients.producer.ProducerConfig.CLIENT_ID_CONFIG;
-import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
-import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.*;
 
 @Configuration
 @RequiredArgsConstructor
@@ -50,18 +46,13 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, GasComposition> gasCompositionProducerFactory(final KafkaConfig kafkaConfig) {
-        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("gasComposition"));
-    }
-
-    @Bean
-    public ProducerFactory<String, NoiseAndVibration> noiseAndVibrationProducerFactory(final KafkaConfig kafkaConfig) {
+    public ProducerFactory<String, Vibration> noiseAndVibrationProducerFactory(final KafkaConfig kafkaConfig) {
         return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("noiseAndVibration"));
     }
 
     @Bean
-    public ProducerFactory<String, FlowRate> flowRateProducerFactory(final KafkaConfig kafkaConfig) {
-        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("flowRate"));
+    public ProducerFactory<String, Humidity> humidityProducerFactory(final KafkaConfig kafkaConfig) {
+        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("humidity"));
     }
 
     @Bean
@@ -75,18 +66,13 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, GasComposition> gasCompositionKafkaTemplate(final KafkaConfig kafkaConfig) {
-        return new KafkaTemplate<>(gasCompositionProducerFactory(kafkaConfig));
-    }
-
-    @Bean
-    public KafkaTemplate<String, NoiseAndVibration> noiseAndVibrationKafkaTemplate(final KafkaConfig kafkaConfig) {
+    public KafkaTemplate<String, Vibration> noiseAndVibrationKafkaTemplate(final KafkaConfig kafkaConfig) {
         return new KafkaTemplate<>(noiseAndVibrationProducerFactory(kafkaConfig));
     }
 
     @Bean
-    public KafkaTemplate<String, FlowRate> flowRateKafkaTemplate(final KafkaConfig kafkaConfig) {
-        return new KafkaTemplate<>(flowRateProducerFactory(kafkaConfig));
+    public KafkaTemplate<String, Humidity> humidityKafkaTemplate(final KafkaConfig kafkaConfig) {
+        return new KafkaTemplate<>(humidityProducerFactory(kafkaConfig));
     }
 
     @Bean
@@ -100,18 +86,13 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaDataForwarder<GasComposition> gasCompositionKafkaDataForwarder(final KafkaConfig kafkaConfig) {
-        return new KafkaDataForwarder<>(gasCompositionKafkaTemplate(kafkaConfig));
-    }
-
-    @Bean
-    public KafkaDataForwarder<NoiseAndVibration> noiseAndVibrationKafkaDataForwarder(final KafkaConfig kafkaConfig) {
+    public KafkaDataForwarder<Vibration> noiseAndVibrationKafkaDataForwarder(final KafkaConfig kafkaConfig) {
         return new KafkaDataForwarder<>(noiseAndVibrationKafkaTemplate(kafkaConfig));
     }
 
     @Bean
-    public KafkaDataForwarder<FlowRate> flowRateKafkaDataForwarder(final KafkaConfig kafkaConfig) {
-        return new KafkaDataForwarder<>(flowRateKafkaTemplate(kafkaConfig));
+    public KafkaDataForwarder<Humidity> humidityKafkaDataForwarder(final KafkaConfig kafkaConfig) {
+        return new KafkaDataForwarder<>(humidityKafkaTemplate(kafkaConfig));
     }
 
     private <T> DefaultKafkaProducerFactory<String, T> getKafkaProducerFactory(final KafkaNativeConfig kafkaNativeConfig,
