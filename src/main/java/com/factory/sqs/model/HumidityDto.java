@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
@@ -13,18 +14,31 @@ public final class HumidityDto {
     private String label;
     private String eventKey;
     private long timestamp;
-    private float value;
+    private HumidityData humidity;
 
     @JsonCreator
     public HumidityDto(
             @JsonProperty("label") final String label,
             @JsonProperty("event_key") final String eventKey,
             @JsonProperty("timestamp") final long timestamp,
-            @JsonProperty("value") final float value
+            @JsonProperty("humidity") final HumidityData humidity
     ) {
         this.label = label;
         this.timestamp = timestamp;
-        this.value = value;
+        this.humidity = humidity;
         this.eventKey = eventKey;
+    }
+
+    @NoArgsConstructor
+    @Getter
+    @EqualsAndHashCode
+    @ToString
+    public static final class HumidityData {
+        private float humidity;
+
+        @JsonCreator
+        public HumidityData(@JsonProperty("humidity") final float humidity) {
+            this.humidity = humidity;
+        }
     }
 }

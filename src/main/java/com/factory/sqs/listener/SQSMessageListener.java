@@ -47,19 +47,19 @@ public class SQSMessageListener {
         temperatureKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("temperature"), dto.getEventKey(), kafkaMessage);
     }
 
-    @SqsListener(value = "${sqs.flowRateQueue}")
+    @SqsListener(value = "${sqs.humidityQueue}")
     @SneakyThrows
-    public void receiveFlowRateMessage(@Payload Message message) {
+    public void receiveHumidityMessage(@Payload Message message) {
         var dto = modelMapper.map(message, HumidityDto.class);
         var kafkaMessage = modelMapper.map(dto, Humidity.class);
-        humidityKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("flowRate"), dto.getEventKey(), kafkaMessage);
+        humidityKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("humidity"), dto.getEventKey(), kafkaMessage);
     }
 
-    @SqsListener(value = "${sqs.noiseAndVibrationQueue}")
+    @SqsListener(value = "${sqs.vibrationQueue}")
     @SneakyThrows
-    public void receiveNoiseAndVibrationMessage(@Payload Message message) {
+    public void receiveVibrationMessage(@Payload Message message) {
         var dto = modelMapper.map(message, VibrationDto.class);
         var kafkaMessage = modelMapper.map(dto, Vibration.class);
-        vibrationKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("noiseAndVibration"), dto.getEventKey(), kafkaMessage);
+        vibrationKafkaDataForwarder.sendMessage(kafkaConfig.getTopicName("vibration"), dto.getEventKey(), kafkaMessage);
     }
 }

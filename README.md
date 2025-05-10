@@ -18,9 +18,8 @@ This module is responsible for forwarding raw sensors data from AWS SQS queues t
 #### Available {sensorTypeQueue} values:
 * pressureQueue
 * temperatureQueue
-* noiseAndVibrationQueue
-* gasCompositionQueue
-* flowRateQueue
+* vibrationQueue
+* humidity
 
 ### Kafka configuration:
 
@@ -34,6 +33,5 @@ This module is responsible for forwarding raw sensors data from AWS SQS queues t
 #### Available {sensor-type} values:
 * pressure
 * temperature
-* flowRate
-* gasComposition
+* humidity
 * compressorState

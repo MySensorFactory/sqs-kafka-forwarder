@@ -46,8 +46,8 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, Vibration> noiseAndVibrationProducerFactory(final KafkaConfig kafkaConfig) {
-        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("noiseAndVibration"));
+    public ProducerFactory<String, Vibration> vibrationProducerFactory(final KafkaConfig kafkaConfig) {
+        return getKafkaProducerFactory(kafkaNativeConfig, kafkaConfig.getClientId("vibration"));
     }
 
     @Bean
@@ -66,8 +66,8 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, Vibration> noiseAndVibrationKafkaTemplate(final KafkaConfig kafkaConfig) {
-        return new KafkaTemplate<>(noiseAndVibrationProducerFactory(kafkaConfig));
+    public KafkaTemplate<String, Vibration> vibrationKafkaTemplate(final KafkaConfig kafkaConfig) {
+        return new KafkaTemplate<>(vibrationProducerFactory(kafkaConfig));
     }
 
     @Bean
@@ -86,8 +86,8 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaDataForwarder<Vibration> noiseAndVibrationKafkaDataForwarder(final KafkaConfig kafkaConfig) {
-        return new KafkaDataForwarder<>(noiseAndVibrationKafkaTemplate(kafkaConfig));
+    public KafkaDataForwarder<Vibration> vibrationKafkaDataForwarder(final KafkaConfig kafkaConfig) {
+        return new KafkaDataForwarder<>(vibrationKafkaTemplate(kafkaConfig));
     }
 
     @Bean

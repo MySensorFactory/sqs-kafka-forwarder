@@ -47,7 +47,7 @@ public class ModelMapperConfig {
         mapper.addConverter(createMessagePressureConverter());
         mapper.addConverter(createMessageTemperatureConverter());
         mapper.addConverter(createMessageHumidityConverter());
-        mapper.addConverter(createMessageNoiseAndVibrationConverter());
+        mapper.addConverter(createMessageVibrationConverter());
         return mapper;
     }
 
@@ -117,7 +117,7 @@ public class ModelMapperConfig {
                 }
                 return Humidity.newBuilder()
                         .setData(HumidityDataRecord.newBuilder()
-                                .setHumidity(dto.getValue())
+                                .setHumidity(dto.getHumidity().getHumidity())
                                 .build())
                         .setLabel(dto.getLabel())
                         .setTimestamp(dto.getTimestamp())
@@ -126,7 +126,7 @@ public class ModelMapperConfig {
         };
     }
 
-    private static Converter<VibrationDto, Vibration> createMessageNoiseAndVibrationConverter() {
+    private static Converter<VibrationDto, Vibration> createMessageVibrationConverter() {
         return new AbstractConverter<>() {
             @Override
             @SneakyThrows
@@ -136,7 +136,7 @@ public class ModelMapperConfig {
                 }
                 return Vibration.newBuilder()
                         .setVibrationData(VibrationDataRecord.newBuilder()
-                                .setVibration(dto.getVibrationData().getValue())
+                                .setVibration(dto.getVibrationData().getVibration())
                                 .build())
                         .setLabel(dto.getLabel())
                         .setTimestamp(dto.getTimestamp())

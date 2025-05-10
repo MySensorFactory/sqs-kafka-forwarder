@@ -34,11 +34,11 @@ public final class VibrationDto {
     @EqualsAndHashCode
     @ToString
     public static final class VibrationData {
-        private float value;
+        private float vibration;
 
         @JsonCreator
-        public VibrationData(@JsonProperty("value") final float value) {
-            this.value = value;
+        public VibrationData(@JsonProperty("vibration") final float vibration) {
+            this.vibration = vibration;
         }
     }
 }
